@@ -1,6 +1,6 @@
 {
   "name": "@xklaim/warndog",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A brutally honest senior engineer watching your JavaScript/Node.js code in real time",
   "keywords": [
     "static-analysis",
