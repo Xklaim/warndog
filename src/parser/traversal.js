@@ -168,13 +168,39 @@ const KNOWN_ASYNC_NAMES = new Set([
   'crypto.subtle.digest',
 ]);
 
+const COMMON_SYNC_MEMBER_NAMES = new Set([
+  'get',
+  'set',
+  'delete',
+  'has',
+  'add',
+  'clear',
+  'post',
+  'put',
+  'patch',
+  'use',
+  'listen',
+  'all',
+  'route',
+  'on',
+  'off',
+  'emit',
+]);
+
 function isLikelyAsync(callNode) {
   const name = getCalleeName(callNode);
   if (!name) return false;
   // Exact match
   if (KNOWN_ASYNC_NAMES.has(name)) return true;
+  if (
+    t.isMemberExpression(callNode.callee) &&
+    t.isIdentifier(callNode.callee.property) &&
+    COMMON_SYNC_MEMBER_NAMES.has(callNode.callee.property.name)
+  ) {
+    return false;
+  }
   // Heuristic suffix match
-  return /\b(fetch|get|post|put|delete|patch|load|save|create|update|remove|send|connect|query|find|read|write|upload|download|request|sign|verify|hash|compare|emit|publish|subscribe)\b/i.test(name);
+  return /\b(fetch|load|save|create|update|remove|send|connect|query|find|read|write|upload|download|request|sign|verify|hash|compare|publish|subscribe)\b/i.test(name);
 }
 
 module.exports = {

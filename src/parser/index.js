@@ -16,6 +16,7 @@ const BABEL_PLUGINS = [
   'functionBind',
   'functionSent',
   'importMeta',
+  'jsx',
   'logicalAssignment',
   'nullishCoalescingOperator',
   'numericSeparator',
