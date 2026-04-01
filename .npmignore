@@ -1,0 +1,6 @@
+tests/
+.eslintrc.js
+.github/
+docs/
+*.log
+coverage/
