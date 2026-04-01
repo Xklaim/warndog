@@ -71,7 +71,11 @@ function formatWarning(warning) {
 
   if (warning.code) {
     lines.push('');
-    lines.push(formatCodeSnippet(warning.code, warning.line, warning.highlightLine));
+    lines.push(formatCodeSnippet(
+      warning.code.lines,
+      warning.code.startLine,
+      warning.highlightLine ?? warning.line
+    ));
   }
 
   lines.push('');
@@ -85,7 +89,7 @@ function formatConfidence(score) {
   return chalk.gray(`${score}%`);
 }
 
-function formatCodeSnippet(lines, startLine, highlightLine) {
+function formatCodeSnippet(lines = [], startLine, highlightLine) {
   const pad = String(startLine + lines.length).length;
   return lines.map((line, i) => {
     const lineNo   = String(startLine + i).padStart(pad);
@@ -194,7 +198,7 @@ function printResults(results, opts = {}) {
     );
     printFileHeader(result.file, result.warnings.length);
     for (const warning of result.warnings) {
-      console.log(formatWarning(warning));
+      console.log(formatWarning({ ...warning, file: result.file }));
     }
   }
 

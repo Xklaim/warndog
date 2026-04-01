@@ -34,10 +34,10 @@ function run() {
   // Default command: full scan
   program
     .argument('[target]', 'file, directory, or glob to scan', '.')
-    .action(async (target, options, cmd) => {
-      const globalOpts = cmd.parent?.opts() ?? cmd.opts();
-      if (!globalOpts.quiet) printBanner();
-      await scanCommand.handler(target, mergeOpts(cmd));
+    .action(async (target) => {
+      const globalOpts = program.opts();
+      if (!globalOpts.quiet && !globalOpts.json) printBanner();
+      await scanCommand.handler(target, globalOpts);
     });
 
   program.addCommand(buildScanCmd());

@@ -24,12 +24,13 @@ async function handler(target, opts = {}) {
   };
 
   const targetPath = path.resolve(cwd, target);
+  const silentMode = opts.quiet || opts.json;
 
-  if (!opts.quiet) {
+  if (!silentMode) {
     printSniffing(targetPath);
   }
 
-  const spinner = opts.quiet
+  const spinner = silentMode
     ? null
     : ora({ text: chalk.gray('Parsing files…'), spinner: 'dots2' }).start();
 
