@@ -6,10 +6,12 @@ const ora    = require('ora');
 const { loadConfig }    = require('../../config');
 const { Engine }        = require('../../engine');
 const { printSniffing, printResults, printJSON } = require('../output/formatter');
+const { resolveConfigCwd } = require('../resolve-config-cwd');
 
 async function handler(target, opts = {}) {
   const cwd    = process.cwd();
-  const config = await loadConfig(opts.config, cwd);
+  const configCwd = resolveConfigCwd(cwd, target, opts.config);
+  const config = await loadConfig(opts.config, configCwd);
 
   // Merge CLI flags into config
   const mergedConfig = {

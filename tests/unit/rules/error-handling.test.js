@@ -59,4 +59,28 @@ describe('error-handling rule', () => {
     const noStackTrace = warnings.find(w => w.message.includes('stack trace'));
     expect(noStackTrace).toBeDefined();
   });
+
+  it('does NOT warn on intentionally ignored localStorage writes', () => {
+    const code = `
+      try {
+        localStorage.setItem('theme', 'dark');
+      } catch {}
+    `;
+    const warnings = analyse(code);
+    expect(warnings.length).toBe(0);
+  });
+
+  it('does NOT warn on intentionally ignored clipboard writes', () => {
+    const code = `
+      async function copy(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        } catch {}
+      }
+    `;
+    const warnings = analyse(code);
+    expect(warnings.length).toBe(0);
+  });
 });

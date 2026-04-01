@@ -24,4 +24,9 @@ describe('floating-promise rule', () => {
     const warnings = analyse('timers.delete(filePath);');
     expect(warnings.length).toBe(0);
   });
+
+  it('does not warn on setTimeout callbacks', () => {
+    const warnings = analyse('setTimeout(() => doSomething(), 2000);');
+    expect(warnings.length).toBe(0);
+  });
 });

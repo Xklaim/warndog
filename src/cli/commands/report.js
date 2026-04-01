@@ -7,10 +7,12 @@ const ora   = require('ora');
 const { loadConfig } = require('../../config');
 const { Engine }     = require('../../engine');
 const { version }    = require('../../../package.json');
+const { resolveConfigCwd } = require('../resolve-config-cwd');
 
 async function handler(target, opts = {}) {
   const cwd        = process.cwd();
-  const config     = await loadConfig(opts.config, cwd);
+  const configCwd  = resolveConfigCwd(cwd, target, opts.config);
+  const config     = await loadConfig(opts.config, configCwd);
   const targetPath = path.resolve(cwd, target);
   const outputFile = path.resolve(cwd, opts.output ?? 'warndog-report.json');
   const format     = opts.format ?? 'json';

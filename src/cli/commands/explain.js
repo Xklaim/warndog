@@ -7,6 +7,7 @@ const { loadConfig }        = require('../../config');
 const { Engine }            = require('../../engine');
 const { printExplanation }  = require('../output/formatter');
 const { getAllRules }        = require('../../rules');
+const { resolveConfigCwd }  = require('../resolve-config-cwd');
 
 async function handler(location, opts = {}) {
   // Mode 1: explain a rule by ID
@@ -24,7 +25,8 @@ async function handler(location, opts = {}) {
   }
 
   const cwd        = process.cwd();
-  const config     = await loadConfig(opts.config, cwd);
+  const configCwd  = resolveConfigCwd(cwd, file, opts.config);
+  const config     = await loadConfig(opts.config, configCwd);
   const targetPath = path.resolve(cwd, file);
 
   if (!fs.existsSync(targetPath)) {

@@ -31,6 +31,7 @@ module.exports = {
 
       // Skip constructor, setters, generators
       if (node.kind === 'constructor' || node.kind === 'set' || node.generator) return;
+      if (isReactEffectCallback(path)) return;
 
       const returns = collectDirectReturns(path);
       if (returns.length === 0) return;
@@ -106,4 +107,24 @@ function getFunctionName(path) {
   if (t.isObjectProperty(parent) && t.isIdentifier(parent.key)) return parent.key.name;
   if (t.isAssignmentExpression(parent) && t.isIdentifier(parent.left)) return parent.left.name;
   return '(anonymous)';
+}
+
+function isReactEffectCallback(path) {
+  const parent = path.parentPath;
+  if (!parent?.isCallExpression()) return false;
+  if (parent.node.arguments[0] !== path.node) return false;
+
+  const callee = parent.node.callee;
+  if (t.isIdentifier(callee)) {
+    return ['useEffect', 'useLayoutEffect', 'useInsertionEffect'].includes(callee.name);
+  }
+
+  if (
+    t.isMemberExpression(callee) &&
+    t.isIdentifier(callee.property)
+  ) {
+    return ['useEffect', 'useLayoutEffect', 'useInsertionEffect'].includes(callee.property.name);
+  }
+
+  return false;
 }

@@ -68,6 +68,49 @@ describe('cyclomatic-complexity rule', () => {
     expect(warnings.length).toBeGreaterThanOrEqual(1);
     expect(warnings[0].message).toMatch(/cyclomatic complexity/i);
   });
+
+  it('does NOT warn on React components at the default threshold', () => {
+    const code = `
+      function App({ a, b, c, d, e, f, g, h, i, j }) {
+        if (a) return <div>A</div>;
+        if (b) return <div>B</div>;
+        if (c) return <div>C</div>;
+        if (d) return <div>D</div>;
+        if (e) return <div>E</div>;
+        if (f) return <div>F</div>;
+        if (g) return <div>G</div>;
+        if (h) return <div>H</div>;
+        if (i) return <div>I</div>;
+        if (j) return <div>J</div>;
+        return <div>Z</div>;
+      }
+    `;
+    const warnings = analyse(cyclomatic, code, { complexity: { cyclomaticThreshold: 10 } });
+    expect(warnings.length).toBe(0);
+  });
+
+  it('does NOT warn on useCallback handlers in hooks at the default threshold', () => {
+    const code = `
+      function useRunCode(input) {
+        const runCode = useCallback(() => {
+          if (input.a) return 1;
+          if (input.b) return 2;
+          if (input.c) return 3;
+          if (input.d) return 4;
+          if (input.e) return 5;
+          if (input.f) return 6;
+          if (input.g) return 7;
+          if (input.h) return 8;
+          if (input.i) return 9;
+          if (input.j) return 10;
+          return 11;
+        }, [input]);
+        return runCode;
+      }
+    `;
+    const warnings = analyse(cyclomatic, code, { complexity: { cyclomaticThreshold: 10 } });
+    expect(warnings.length).toBe(0);
+  });
 });
 
 describe('deep-nesting rule', () => {

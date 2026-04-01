@@ -156,7 +156,6 @@ function getCalleeName(node) {
  */
 const KNOWN_ASYNC_NAMES = new Set([
   'fetch', 'axios', 'axios.get', 'axios.post', 'axios.put', 'axios.delete', 'axios.patch',
-  'setTimeout', 'setInterval',
   'readFile', 'writeFile', 'readdir',
   'fs.readFile', 'fs.writeFile', 'fs.readdir', 'fs.unlink', 'fs.stat',
   'connect', 'query', 'find', 'findOne', 'findById', 'save', 'create', 'update', 'delete',
@@ -166,6 +165,16 @@ const KNOWN_ASYNC_NAMES = new Set([
   'bcrypt.hash', 'bcrypt.compare',
   'jwt.verify', 'jwt.sign',
   'crypto.subtle.digest',
+]);
+
+const COMMON_SYNC_NAMES = new Set([
+  'setTimeout',
+  'setInterval',
+  'clearTimeout',
+  'clearInterval',
+  'requestAnimationFrame',
+  'cancelAnimationFrame',
+  'queueMicrotask',
 ]);
 
 const COMMON_SYNC_MEMBER_NAMES = new Set([
@@ -192,6 +201,7 @@ function isLikelyAsync(callNode) {
   if (!name) return false;
   // Exact match
   if (KNOWN_ASYNC_NAMES.has(name)) return true;
+  if (COMMON_SYNC_NAMES.has(name)) return false;
   if (
     t.isMemberExpression(callNode.callee) &&
     t.isIdentifier(callNode.callee.property) &&

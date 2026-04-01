@@ -17,8 +17,9 @@ module.exports = {
   goodExample: '// Split into focused helpers:\nfunction validateOrder(order) { ... }\nfunction applyDiscount(order) { ... }\nfunction notifyUser(order) { ... }',
 
   check({ ast, config }) {
-    const warnings  = [];
-    const threshold = config?.complexity?.cyclomaticThreshold ?? 10;
+    const warnings   = [];
+    const threshold  = config?.complexity?.cyclomaticThreshold ?? 10;
+    const reactBonus = config?.complexity?.reactCyclomaticBonus ?? 20;
 
     walk(ast, {
       'FunctionDeclaration|FunctionExpression|ArrowFunctionExpression'(path) {
@@ -26,18 +27,20 @@ module.exports = {
         if (!node.body || !t.isBlockStatement(node.body)) return;
 
         const complexity = calculateComplexity(path);
-        if (complexity <= threshold) return;
-
         const name = getFunctionName(path);
-        const line = node.loc?.start.line;
+        const effectiveThreshold = isReactishFunction(path, name)
+          ? threshold + reactBonus
+          : threshold;
 
-        const severity = complexity > 20 ? 'high' : 'medium';
+        if (complexity <= effectiveThreshold) return;
+
+        const severity = complexity > effectiveThreshold + 10 ? 'high' : 'medium';
         warnings.push({
-          line,
+          line:       node.loc?.start.line,
           severity,
           confidence: 90,
-          message:    `\`${name}\` has cyclomatic complexity of ${complexity} (threshold: ${threshold}) — this function is doing too much`,
-          suggestion: `break \`${name}\` into smaller focused functions; aim for complexity ≤ ${threshold}`,
+          message:    `\`${name}\` has cyclomatic complexity of ${complexity} (threshold: ${effectiveThreshold}) - this function is doing too much`,
+          suggestion: `break \`${name}\` into smaller focused functions; aim for complexity <= ${effectiveThreshold}`,
         });
       },
     });
@@ -47,19 +50,18 @@ module.exports = {
 };
 
 function calculateComplexity(funcPath) {
-  let complexity = 1; // baseline
+  let complexity = 1;
 
   funcPath.traverse({
-    IfStatement()          { complexity++; },
-    ConditionalExpression(){ complexity++; },
-    WhileStatement()       { complexity++; },
-    DoWhileStatement()     { complexity++; },
-    ForStatement()         { complexity++; },
-    ForInStatement()       { complexity++; },
-    ForOfStatement()       { complexity++; },
-    CatchClause()          { complexity++; },
-    SwitchCase(path)       {
-      // Only count non-default cases
+    IfStatement()           { complexity++; },
+    ConditionalExpression() { complexity++; },
+    WhileStatement()        { complexity++; },
+    DoWhileStatement()      { complexity++; },
+    ForStatement()          { complexity++; },
+    ForInStatement()        { complexity++; },
+    ForOfStatement()        { complexity++; },
+    CatchClause()           { complexity++; },
+    SwitchCase(path) {
       if (path.node.test !== null) complexity++;
     },
     LogicalExpression(path) {
@@ -72,11 +74,54 @@ function calculateComplexity(funcPath) {
 
 function getFunctionName(path) {
   const node = path.node;
-  if (t.isFunctionDeclaration(node) && node.id) return node.id.name + '()';
+  if (t.isFunctionDeclaration(node) && node.id) return `${node.id.name}()`;
   const parent = path.parent;
-  if (t.isVariableDeclarator(parent) && t.isIdentifier(parent.id)) return parent.id.name + '()';
-  if (t.isObjectProperty(parent) && t.isIdentifier(parent.key)) return parent.key.name + '()';
-  if (t.isAssignmentExpression(parent) && t.isIdentifier(parent.left)) return parent.left.name + '()';
-  if (t.isClassMethod(parent) && t.isIdentifier(parent.key)) return parent.key.name + '()';
+  if (t.isVariableDeclarator(parent) && t.isIdentifier(parent.id)) return `${parent.id.name}()`;
+  if (t.isObjectProperty(parent) && t.isIdentifier(parent.key)) return `${parent.key.name}()`;
+  if (t.isAssignmentExpression(parent) && t.isIdentifier(parent.left)) return `${parent.left.name}()`;
+  if (t.isClassMethod(parent) && t.isIdentifier(parent.key)) return `${parent.key.name}()`;
   return '(anonymous function)';
+}
+
+function isReactishFunction(path, name) {
+  const bareName = name.replace(/\(\)$/, '');
+
+  if (/^use[A-Z0-9]/.test(bareName)) return true;
+  if (/^[A-Z]/.test(bareName)) return true;
+  if (containsJsx(path)) return true;
+
+  const parent = path.parentPath;
+  if (!parent?.isCallExpression()) return false;
+  if (parent.node.arguments[0] !== path.node) return false;
+
+  const callee = parent.node.callee;
+  if (t.isIdentifier(callee)) {
+    return ['useCallback', 'useMemo', 'useEffect', 'useLayoutEffect', 'useInsertionEffect'].includes(callee.name);
+  }
+
+  if (
+    t.isMemberExpression(callee) &&
+    t.isIdentifier(callee.property)
+  ) {
+    return ['useCallback', 'useMemo', 'useEffect', 'useLayoutEffect', 'useInsertionEffect'].includes(callee.property.name);
+  }
+
+  return false;
+}
+
+function containsJsx(funcPath) {
+  let found = false;
+
+  funcPath.traverse({
+    JSXElement(path) {
+      found = true;
+      path.stop();
+    },
+    JSXFragment(path) {
+      found = true;
+      path.stop();
+    },
+  });
+
+  return found;
 }

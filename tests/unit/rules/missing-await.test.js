@@ -74,4 +74,14 @@ describe('missing-await rule', () => {
     // Rule default severity is high, but warning itself may not set severity
     expect(warnings.length).toBeGreaterThanOrEqual(1);
   });
+
+  it('does NOT warn on setTimeout inside async functions', () => {
+    const code = `
+      async function go() {
+        setTimeout(() => finish(), 100);
+      }
+    `;
+    const warnings = analyse(code);
+    expect(warnings.length).toBe(0);
+  });
 });
