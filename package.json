@@ -35,7 +35,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "warndog": "./bin/warndog.js"
+    "warndog": "bin/warndog.js"
   },
   "files": [
     "bin",
