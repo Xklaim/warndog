@@ -12,13 +12,13 @@
     "async",
     "bugs"
   ],
-  "homepage": "https://github.com/warndog/warndog#readme",
+  "homepage": "https://github.com/Xklaim/warndog#readme",
   "bugs": {
-    "url": "https://github.com/warndog/warndog/issues"
+    "url": "https://github.com/Xklaim/warndog/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/warndog/warndog.git"
+    "url": "git+https://github.com/Xklaim/warndog.git"
   },
   "license": "MIT",
   "author": "xklaim & Warndog Contributors",
