@@ -57,6 +57,17 @@ describe('cyclomatic-complexity rule', () => {
     const lenientWarnings = analyse(cyclomatic, code, { complexity: { cyclomaticThreshold: 10 } });
     expect(lenientWarnings.length).toBe(0);
   });
+
+  it('counts nullish coalescing without crashing Babel traversal', () => {
+    const code = `
+      function chooseValue(input, fallback, backup) {
+        return input ?? fallback ?? backup;
+      }
+    `;
+    const warnings = analyse(cyclomatic, code, { complexity: { cyclomaticThreshold: 2 } });
+    expect(warnings.length).toBeGreaterThanOrEqual(1);
+    expect(warnings[0].message).toMatch(/cyclomatic complexity/i);
+  });
 });
 
 describe('deep-nesting rule', () => {

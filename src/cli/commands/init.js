@@ -50,14 +50,13 @@ module.exports = {
     'const-mutation':        'high',
 
     // Complexity
-    'cyclomatic-complexity': { severity: 'medium', threshold: 10 },
-    'deep-nesting':          { severity: 'medium', threshold: 4 },
+    'cyclomatic-complexity': 'medium',
+    'deep-nesting':          'medium',
     'callback-hell':         'medium',
 
     // Patterns
     'risky-equality':        'low',
     'error-handling':        'medium',
-    'no-catch-promise':      'high',
   },
 
   // ── Complexity Thresholds ────────────────────────────────────────────
@@ -90,16 +89,16 @@ async function handler(opts = {}) {
   const configPath = path.join(cwd, 'warndog.config.js');
 
   if (fs.existsSync(configPath) && !opts.force) {
-    console.log(chalk.yellow(`⚠️  warndog.config.js already exists.`));
-    console.log(chalk.gray(`   Use --force to overwrite it.`));
+    console.log(chalk.yellow('⚠️  warndog.config.js already exists.'));
+    console.log(chalk.gray('   Use --force to overwrite it.'));
     return;
   }
 
   fs.writeFileSync(configPath, CONFIG_TEMPLATE, 'utf8');
 
-  console.log(chalk.green(`✅  Created warndog.config.js`));
-  console.log(chalk.gray(`\nNext steps:`));
-  console.log(chalk.gray(`  1. Review and customise the config`));
+  console.log(chalk.green('✅  Created warndog.config.js'));
+  console.log(chalk.gray('\nNext steps:'));
+  console.log(chalk.gray('  1. Review and customise the config'));
   console.log(chalk.gray(`  2. Run ${chalk.white('warndog')} to analyse your project`));
   console.log(chalk.gray(`  3. Run ${chalk.white('warndog watch')} for live feedback\n`));
 }

@@ -59,7 +59,7 @@ module.exports = {
               line:       side.loc?.start.line,
               confidence: 75,
               message:    `\`${desc}\` in a logical \`${operator}\` expression is always truthy — this may not do what you expect`,
-              suggestion: `check whether you meant to compare the value rather than use it as a boolean`,
+              suggestion: 'check whether you meant to compare the value rather than use it as a boolean',
             });
           }
         }
@@ -79,7 +79,7 @@ function checkNode(node, line, warnings) {
       line,
       confidence: 80,
       message:    `this condition (\`${desc}\`) is always truthy — the else branch will never run`,
-      suggestion: `did you mean to compare to a specific value instead?`,
+      suggestion: 'did you mean to compare to a specific value instead?',
     });
     return;
   }
@@ -90,7 +90,7 @@ function checkNode(node, line, warnings) {
       line,
       confidence: 85,
       message:    `this condition (\`${desc}\`) is always falsy — the if block will never run`,
-      suggestion: `this looks like dead code — verify your intent`,
+      suggestion: 'this looks like dead code — verify your intent',
     });
   }
 }
@@ -101,8 +101,8 @@ function describeNode(node) {
   if (t.isNullLiteral(node))    return 'null';
   if (t.isBooleanLiteral(node)) return String(node.value);
   if (t.isIdentifier(node))     return node.name;
-  if (t.isArrayExpression(node))  return `[]`;
-  if (t.isObjectExpression(node)) return `{}`;
+  if (t.isArrayExpression(node))  return '[]';
+  if (t.isObjectExpression(node)) return '{}';
   if (t.isUnaryExpression(node) && node.operator === 'typeof') return 'typeof ...';
   return node.type;
 }

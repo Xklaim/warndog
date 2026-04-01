@@ -16,7 +16,7 @@ module.exports = {
   badExample:  'async function loadUser() {\n  db.findOne({ id }); // ← not awaited!\n  return res.json(user); // user is undefined\n}',
   goodExample: 'async function loadUser() {\n  const user = await db.findOne({ id });\n  return res.json(user);\n}',
 
-  check({ ast, sourceLines }) {
+  check({ ast }) {
     const warnings = [];
 
     walk(ast, {
@@ -59,7 +59,7 @@ module.exports = {
   },
 };
 
-function computeConfidence(name, path) {
+function computeConfidence(name) {
   // Boost confidence for well-known async APIs
   const highConf = new Set(['fetch', 'axios', 'axios.get', 'axios.post', 'db.query', 'fs.readFile', 'fs.writeFile']);
   if (highConf.has(name)) return 92;

@@ -56,8 +56,8 @@ module.exports = {
               warnings.push({
                 line:       node.loc?.start.line,
                 confidence: 88,
-                message:    `this condition looks impossible… it checks typeof as both defined and undefined simultaneously`,
-                suggestion: `remove one of the redundant typeof checks`,
+                message:    'this condition looks impossible… it checks typeof as both defined and undefined simultaneously',
+                suggestion: 'remove one of the redundant typeof checks',
               });
             }
           }
@@ -80,7 +80,7 @@ module.exports = {
             line:       node.loc?.start.line,
             confidence: 95,
             message:    `\`${node.left.name} ${op} ${node.right.name}\` is ${kind} — you're comparing a variable to itself`,
-            suggestion: `did you mean to compare to a different variable or value?`,
+            suggestion: 'did you mean to compare to a different variable or value?',
           });
         }
       },
@@ -96,8 +96,8 @@ module.exports = {
             confidence: 99,
             message:    `\`if (${test.value})\` is a literal — this block ${kind}`,
             suggestion: test.value
-              ? `remove the if() wrapper and keep the body`
-              : `this dead code block can be deleted entirely`,
+              ? 'remove the if() wrapper and keep the body'
+              : 'this dead code block can be deleted entirely',
           });
         }
 
@@ -107,7 +107,7 @@ module.exports = {
             line:       test.loc?.start.line,
             confidence: 97,
             message:    `\`if (${test.value})\` is a numeric literal — this block ${kind}`,
-            suggestion: `replace with an explicit boolean condition`,
+            suggestion: 'replace with an explicit boolean condition',
           });
         }
       },
@@ -134,7 +134,7 @@ module.exports = {
             line:       logical.loc?.start.line,
             confidence: 85,
             message:    `\`${logical.left.name} && ${logical.left.name} === null\` — if the left side is truthy, the right can never be null`,
-            suggestion: `the null check is unreachable; check your logic`,
+            suggestion: 'the null check is unreachable; check your logic',
           });
         }
       },

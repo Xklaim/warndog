@@ -17,7 +17,7 @@ class Engine {
 
   async init() {
     if (this.ruleEngine) return;
-    const plugins    = await loadPlugins(this.config.plugins ?? []);
+    const plugins    = await loadPlugins(this.config.plugins ?? [], this.config);
     this.ruleEngine  = new RuleEngine(this.config, plugins);
   }
 

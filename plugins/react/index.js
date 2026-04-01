@@ -70,7 +70,7 @@ const setStateInRender = createRule({
               line:       callPath.node.loc?.start.line,
               confidence: 85,
               message:    `\`${callee.name}()\` called directly in render body — this will cause an infinite re-render loop`,
-              suggestion: `move this inside a \`useEffect(() => { ... }, [])\` or an event handler`,
+              suggestion: 'move this inside a `useEffect(() => { ... }, [])` or an event handler',
             });
           },
         });
@@ -112,8 +112,8 @@ const useEffectMissingDeps = createRule({
           warnings.push({
             line:       path.node.loc?.start.line,
             confidence: 80,
-            message:    `\`useEffect\` has no dependency array — it will re-run on every single render`,
-            suggestion: `add \`[]\` as the second argument to run once, or list specific dependencies`,
+            message:    '`useEffect` has no dependency array — it will re-run on every single render',
+            suggestion: 'add `[]` as the second argument to run once, or list specific dependencies',
           });
         }
       },

@@ -1,7 +1,7 @@
 'use strict';
 
 const t = require('@babel/types');
-const { walk, isLikelyAsync, getCalleeName } = require('../../parser/traversal');
+const { walk, isLikelyAsync } = require('../../parser/traversal');
 
 /** @type {import('../index').Rule} */
 module.exports = {
@@ -35,7 +35,6 @@ module.exports = {
 
         // Find the root of the chain to report on
         const root = chainRoot(expr);
-        const rootName = root ? getCalleeName(root) : null;
 
         // Filter: only report if the root looks like an async call
         if (root && !isLikelyAsync(root) && !isPromiseCall(root)) return;
@@ -44,8 +43,8 @@ module.exports = {
         warnings.push({
           line,
           confidence: 82,
-          message:    `this promise chain has no \`.catch()\`… errors here will disappear silently`,
-          suggestion: `add \`.catch(err => { /* handle error */ })\` at the end of this chain`,
+          message:    'this promise chain has no `.catch()`… errors here will disappear silently',
+          suggestion: 'add `.catch(err => { /* handle error */ })` at the end of this chain',
         });
       },
     });
@@ -96,7 +95,6 @@ function isPromiseCall(node) {
   const callee = node.callee;
   if (t.isMemberExpression(callee)) {
     const obj  = callee.object;
-    const prop = callee.property;
     if (t.isIdentifier(obj) && obj.name === 'Promise') return true;
   }
   return false;

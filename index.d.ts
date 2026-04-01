@@ -57,7 +57,7 @@ export interface RuleContext {
 export interface Plugin {
   name:   string;
   rules?: Rule[];
-  setup?: () => void | Promise<void>;
+  setup?: (config?: WarnDogConfig) => void | Promise<void>;
 }
 
 export declare class Engine {
@@ -68,7 +68,7 @@ export declare class Engine {
 }
 
 export declare function loadConfig(explicitPath?: string, cwd?: string): Promise<WarnDogConfig>;
-export declare function loadPlugins(plugins: (string | Plugin)[]): Promise<Plugin[]>;
-export declare function createPlugin(def: Omit<Plugin, 'setup'> & { setup?: () => void }): Plugin;
+export declare function loadPlugins(plugins: (string | Plugin)[], config?: WarnDogConfig): Promise<Plugin[]>;
+export declare function createPlugin(def: Omit<Plugin, 'setup'> & { setup?: (config?: WarnDogConfig) => void | Promise<void> }): Plugin;
 export declare function createRule(def: Rule): Rule;
 export declare function getAllRules(): Rule[];

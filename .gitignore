@@ -2,6 +2,7 @@ node_modules/
 dist/
 build/
 coverage/
+.npm-cache/
 *.log
 .DS_Store
 warndog-report.*

@@ -1,7 +1,7 @@
 'use strict';
 
 const t = require('@babel/types');
-const { walk, getCalleeName } = require('../../src/parser/traversal');
+const { walk } = require('../../src/parser/traversal');
 const { createPlugin, createRule } = require('../../src/plugins');
 
 // ──────────────────────────────────────────────
@@ -23,7 +23,6 @@ const missingErrorMiddleware = createRule({
     const warnings = [];
     let   usesExpress  = false;
     let   hasErrorHandler = false;
-    let   appName      = 'app';
 
     // Detect express usage
     walk(ast, {
@@ -33,7 +32,6 @@ const missingErrorMiddleware = createRule({
           const callee = init.callee;
           if (t.isIdentifier(callee) && callee.name === 'express') {
             usesExpress = true;
-            if (t.isIdentifier(path.node.id)) appName = path.node.id.name;
           }
           if (t.isCallExpression(callee) && t.isIdentifier(callee.callee) && callee.callee.name === 'require') {
             const args = callee.arguments;
@@ -64,8 +62,8 @@ const missingErrorMiddleware = createRule({
       warnings.push({
         line:       1,
         confidence: 70,
-        message:    `no Express error-handling middleware found — unhandled errors will be silently swallowed`,
-        suggestion: `add \`app.use((err, req, res, next) => { ... })\` as the last middleware`,
+        message:    'no Express error-handling middleware found — unhandled errors will be silently swallowed',
+        suggestion: 'add `app.use((err, req, res, next) => { ... })` as the last middleware',
       });
     }
 
@@ -119,7 +117,7 @@ const doubleResponse = createRule({
             line:       sendCalls[1].loc?.start.line,
             confidence: 72,
             message:    `\`res.${sendCalls[1].callee.property.name}()\` called when a response may have already been sent — "headers already sent" error incoming`,
-            suggestion: `use \`return res.json(...)\` to prevent execution from falling through`,
+            suggestion: 'use `return res.json(...)` to prevent execution from falling through',
           });
         }
       },

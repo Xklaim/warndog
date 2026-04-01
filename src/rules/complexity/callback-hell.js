@@ -31,7 +31,7 @@ module.exports = {
           severity,
           confidence: 80,
           message:    `callback nested ${callbackDepth} levels deep — this is callback hell`,
-          suggestion: `refactor using async/await or Promise chaining to flatten the structure`,
+          suggestion: 'refactor using async/await or Promise chaining to flatten the structure',
         });
       },
     });

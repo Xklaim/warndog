@@ -1,6 +1,5 @@
 'use strict';
 
-const t = require('@babel/types');
 const { walk } = require('../../parser/traversal');
 
 const NESTING_NODES = new Set([
@@ -43,7 +42,7 @@ module.exports = {
           severity,
           confidence: 85,
           message:    `nesting depth of ${depth} reached — deeply nested code is a maintenance hazard`,
-          suggestion: `use early returns (guard clauses), extract inner logic into helper functions`,
+          suggestion: 'use early returns (guard clauses), extract inner logic into helper functions',
         });
       },
     });

@@ -29,8 +29,8 @@ module.exports = {
           warnings.push({
             line:       path.node.loc?.start.line,
             confidence: 95,
-            message:    `empty catch block — errors here are silently swallowed, you'll never know when this breaks`,
-            suggestion: `at minimum: \`console.error(err)\` or re-throw with \`throw err\``,
+            message:    'empty catch block — errors here are silently swallowed, you\'ll never know when this breaks',
+            suggestion: 'at minimum: `console.error(err)` or re-throw with `throw err`',
           });
           return;
         }
@@ -43,8 +43,8 @@ module.exports = {
           warnings.push({
             line:       path.node.loc?.start.line,
             confidence: 90,
-            message:    `catch block with no real statements — errors are effectively ignored`,
-            suggestion: `log or handle the error, don't just leave a comment`,
+            message:    'catch block with no real statements — errors are effectively ignored',
+            suggestion: 'log or handle the error, don\'t just leave a comment',
           });
           return;
         }

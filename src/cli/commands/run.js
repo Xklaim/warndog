@@ -7,7 +7,7 @@ const { loadConfig } = require('../../config');
 
 async function handler(script, scriptArgs, opts = {}) {
   const cwd      = process.cwd();
-  const config   = await loadConfig(opts.config, cwd);
+  await loadConfig(opts.config, cwd);
   const scriptPath = path.resolve(cwd, script);
   const timeout  = parseInt(opts.timeout ?? '30000', 10);
 
@@ -48,7 +48,7 @@ async function handler(script, scriptArgs, opts = {}) {
     clearTimeout(timer);
     if (!killed) {
       const status = code === 0
-        ? chalk.green(`✅  exited cleanly (code 0)`)
+        ? chalk.green('✅  exited cleanly (code 0)')
         : chalk.red(`❌  exited with code ${code ?? signal}`);
       console.log('\n' + chalk.yellow('🐶 warndog runtime summary:') + '  ' + status);
     }

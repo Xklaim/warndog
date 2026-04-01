@@ -1,7 +1,6 @@
 'use strict';
 
 const path = require('path');
-const fs   = require('fs');
 
 /**
  * Plugin API shape:
@@ -12,7 +11,7 @@ const fs   = require('fs');
  * }
  */
 
-async function loadPlugins(pluginList = []) {
+async function loadPlugins(pluginList = [], config = {}) {
   const loaded = [];
 
   for (const entry of pluginList) {
@@ -43,7 +42,7 @@ async function loadPlugins(pluginList = []) {
 
     // Call optional setup hook
     if (typeof plugin.setup === 'function') {
-      try { await plugin.setup(); } catch (e) {
+      try { await plugin.setup(config); } catch (e) {
         console.warn(`[warndog] Plugin "${plugin.name}" setup error:`, e.message);
       }
     }
@@ -106,7 +105,7 @@ function createRule(ruleDef) {
 }
 
 function validateRule(rule) {
-  if (!rule.id)              throw new Error(`[warndog] Rule missing "id"`);
+  if (!rule.id)              throw new Error('[warndog] Rule missing "id"');
   if (!rule.description)     throw new Error(`[warndog] Rule "${rule.id}" missing "description"`);
   if (!rule.defaultSeverity) throw new Error(`[warndog] Rule "${rule.id}" missing "defaultSeverity"`);
   if (typeof rule.check !== 'function' && typeof rule.checkAll !== 'function') {

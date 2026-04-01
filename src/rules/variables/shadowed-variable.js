@@ -69,7 +69,7 @@ module.exports = {
                 line:       param.loc?.start.line,
                 confidence: 65,
                 message:    `parameter \`${name}\` shadows an outer-scope variable — the outer variable is inaccessible inside this function`,
-                suggestion: `rename the parameter to avoid the conflict`,
+                suggestion: 'rename the parameter to avoid the conflict',
               });
               break;
             }

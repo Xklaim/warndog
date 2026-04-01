@@ -3,20 +3,6 @@
 const t = require('@babel/types');
 const { walk } = require('../../parser/traversal');
 
-// Decision points that increase cyclomatic complexity
-const DECISION_NODES = new Set([
-  'IfStatement',
-  'ConditionalExpression',
-  'WhileStatement',
-  'DoWhileStatement',
-  'ForStatement',
-  'ForInStatement',
-  'ForOfStatement',
-  'CatchClause',
-  'SwitchCase',
-  'LogicalExpression', // && and || add branching
-]);
-
 module.exports = {
   id:              'cyclomatic-complexity',
   description:     'Functions with cyclomatic complexity above threshold are hard to test and reason about',
@@ -77,9 +63,8 @@ function calculateComplexity(funcPath) {
       if (path.node.test !== null) complexity++;
     },
     LogicalExpression(path) {
-      if (path.node.operator === '&&' || path.node.operator === '||') complexity++;
+      if (['&&', '||', '??'].includes(path.node.operator)) complexity++;
     },
-    NullishCoalescingOperator() { complexity++; },
   });
 
   return complexity;

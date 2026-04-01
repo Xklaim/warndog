@@ -14,7 +14,6 @@
 const chalk = require('chalk');
 
 const TRACK_ASYNC  = process.env.WARNDOG_TRACK_ASYNC !== 'false';
-const TRACK_NULLS  = process.env.WARNDOG_TRACK_NULLS === 'true';
 const DEBUG        = process.env.WARNDOG_DEBUG === 'true';
 
 const TAG = chalk.yellow('[warndog runtime]');
@@ -119,7 +118,7 @@ if (TRACK_ASYNC) {
 // Exit summary
 // ──────────────────────────────────────────────
 
-process.on('exit', (code) => {
+process.on('exit', () => {
   if (process.env.WARNDOG_RUNTIME) {
     // Summary is printed by the run command handler
   }

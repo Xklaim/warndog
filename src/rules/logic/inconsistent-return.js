@@ -47,7 +47,7 @@ module.exports = {
           line,
           confidence: 72,
           message:    `\`${funcName}\` has inconsistent return paths — sometimes returns a value, sometimes returns nothing (undefined)`,
-          suggestion: `make all code paths explicitly return a value, or return \`null\` where no value is intended`,
+          suggestion: 'make all code paths explicitly return a value, or return `null` where no value is intended',
         });
       }
 
@@ -62,7 +62,7 @@ module.exports = {
           line:       node.loc?.start.line,
           confidence: 55,
           message:    `\`${name}\` looks like it should return a value but has no return statement`,
-          suggestion: `if this function computes something, make sure to return it`,
+          suggestion: 'if this function computes something, make sure to return it',
         });
       }
     }

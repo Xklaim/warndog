@@ -21,18 +21,38 @@
     "url": "git+https://github.com/warndog/warndog.git"
   },
   "license": "MIT",
-  "author": "Warndog Contributors",
+  "author": "xklaim & Warndog Contributors",
   "main": "src/index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./plugins/express": "./plugins/express/index.js",
+    "./plugins/react": "./plugins/react/index.js",
+    "./package.json": "./package.json"
+  },
   "bin": {
     "warndog": "./bin/warndog.js"
   },
+  "files": [
+    "bin",
+    "src",
+    "plugins",
+    "index.d.ts"
+  ],
   "scripts": {
     "start": "node bin/warndog.js",
-    "test": "jest --testPathPattern=tests/",
-    "test:unit": "jest --testPathPattern=tests/unit/",
-    "test:integration": "jest --testPathPattern=tests/integration/",
-    "test:coverage": "jest --coverage",
-    "lint": "eslint src/ --ext .js",
+    "test": "jest --runInBand --testPathPattern=tests/",
+    "test:unit": "jest --runInBand --testPathPattern=tests/unit/",
+    "test:integration": "jest --runInBand --testPathPattern=tests/integration/",
+    "test:coverage": "jest --runInBand --coverage",
+    "lint": "eslint src/ plugins/ bin/ --ext .js",
+    "lint:fix": "eslint src/ plugins/ bin/ --ext .js --fix",
+    "pack:check": "npm pack --dry-run --json --cache ./.npm-cache",
+    "prepublishOnly": "npm run lint && npm test",
     "dev": "node bin/warndog.js"
   },
   "dependencies": {

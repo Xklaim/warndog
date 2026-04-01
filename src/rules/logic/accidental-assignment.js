@@ -16,7 +16,7 @@ module.exports = {
   badExample:  'if (user.role = "admin") {\n  // always true! you assigned, not compared\n}',
   goodExample: 'if (user.role === "admin") {\n  // comparison — correct\n}',
 
-  check({ ast, sourceLines }) {
+  check({ ast }) {
     const warnings = [];
 
     // Nodes that legally accept assignments in their test
@@ -34,12 +34,10 @@ module.exports = {
         if (!CONDITION_PARENTS.includes(parentType)) return;
 
         // Intentional pattern: ((x = getValue())) — double parens signals intent
-        const grandParent = path.parentPath?.parent;
-        if (t.isParenthesizedExpression && path.parentPath?.node?.extra?.parenthesized) return;
+        if (path.node.extra?.parenthesized) return;
 
         const node  = path.node;
         const left  = node.left;
-        const right = node.right;
 
         // Build a human-readable description of the assignment
         let desc = 'a value';
@@ -51,7 +49,7 @@ module.exports = {
           column:     node.loc?.start.column,
           confidence: 88,
           message:    `assignment to ${desc} used as a condition — did you mean \`===\` instead of \`=\`?`,
-          suggestion: `change \`=\` to \`===\` if this is a comparison, or wrap in extra parens \`(( ))\` if assignment is intentional`,
+          suggestion: 'change `=` to `===` if this is a comparison, or wrap in extra parens `(( ))` if assignment is intentional',
         });
       },
     });

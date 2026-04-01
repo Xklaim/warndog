@@ -63,8 +63,8 @@ function generateMarkdownReport(results) {
     '',
     '## Summary',
     '',
-    `| Severity | Count |`,
-    `|----------|-------|`,
+    '| Severity | Count |',
+    '|----------|-------|',
     ...Object.entries(json.summary.bySeverity).map(([s, c]) => `| ${s} | ${c} |`),
     `| **Total** | **${json.summary.total}** |`,
     '',
@@ -90,7 +90,6 @@ function generateMarkdownReport(results) {
 
 function generateHtmlReport(results) {
   const json = buildJsonReport(results);
-  const SEV_COLORS = { critical: '#ef4444', high: '#f97316', medium: '#eab308', low: '#3b82f6' };
 
   const warningCards = results.flatMap(r =>
     r.warnings.map(w => `

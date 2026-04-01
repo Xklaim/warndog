@@ -5,7 +5,7 @@ const chalk     = require('chalk');
 const chokidar  = require('chokidar');
 const { loadConfig }    = require('../../config');
 const { Engine }        = require('../../engine');
-const { printBanner, printWatchUpdate, printResults } = require('../output/formatter');
+const { printWatchUpdate, printResults } = require('../output/formatter');
 
 async function handler(target, opts = {}) {
   const cwd    = process.cwd();
@@ -27,7 +27,7 @@ async function handler(target, opts = {}) {
   console.log(chalk.gray(`   (debounce: ${debounceMs}ms  •  press Ctrl+C to stop)\n`));
 
   // Initial scan
-  await runScan(engine, targetPath, mergedConfig, null);
+  await runScan(engine, targetPath, mergedConfig);
 
   // Map of pending timers per-file
   const timers = new Map();
@@ -45,7 +45,7 @@ async function handler(target, opts = {}) {
       timers.delete(filePath);
       printWatchUpdate(path.relative(cwd, filePath));
       // Only re-scan the changed file for speed
-      await runScan(engine, filePath, mergedConfig, filePath);
+      await runScan(engine, filePath, mergedConfig);
     }, debounceMs));
   }
 
@@ -67,7 +67,7 @@ async function handler(target, opts = {}) {
   });
 }
 
-async function runScan(engine, targetPath, config, changedFile) {
+async function runScan(engine, targetPath, config) {
   try {
     const results = await engine.analyzeTarget(targetPath);
     printResults(results, config);

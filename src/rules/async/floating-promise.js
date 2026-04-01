@@ -1,7 +1,7 @@
 'use strict';
 
 const t = require('@babel/types');
-const { walk, isLikelyAsync, isAwaited } = require('../../parser/traversal');
+const { walk, isLikelyAsync } = require('../../parser/traversal');
 
 /** @type {import('../index').Rule} */
 module.exports = {
@@ -44,8 +44,8 @@ module.exports = {
         warnings.push({
           line,
           confidence: 70,
-          message:    `this call returns a Promise that is completely ignored — if it fails, you won't know`,
-          suggestion: `either \`await\` it, assign the result, or attach a \`.catch()\``,
+          message:    'this call returns a Promise that is completely ignored — if it fails, you won\'t know',
+          suggestion: 'either `await` it, assign the result, or attach a `.catch()`',
         });
       },
     });
